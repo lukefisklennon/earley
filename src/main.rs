@@ -59,16 +59,13 @@ fn s_expression(tree: &Tree) -> Option<String> {
                 return None;
             }
 
-            label
-                .split_whitespace()
-                .next()
-                .map(|label| {
-                    if label.starts_with('<') {
-                        format!("{}", expressions.join(" "))
-                    } else {
-                        format!("[{} {}]", label, expressions.join(" "))
-                    }
-                })
+            label.split_whitespace().next().map(|label| {
+                if label.starts_with('<') {
+                    expressions.join(" ")
+                } else {
+                    format!("[{} {}]", label, expressions.join(" "))
+                }
+            })
         }
         Tree::Leaf(label, value) => {
             if label.starts_with('<') {
