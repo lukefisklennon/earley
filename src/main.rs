@@ -53,19 +53,22 @@ fn main() -> Result<(), Box<dyn Error>> {
 fn s_expression(tree: &Tree) -> Option<String> {
     match tree {
         Tree::Node(label, children) => {
-            if label.starts_with('<') {
-                match children.len() {
-                    0 => return None,
-                    _ => return s_expression(&children[0]),
-                }
-            }
-
             let expressions: Vec<String> = children.iter().filter_map(s_expression).collect();
+
+            if expressions.is_empty() {
+                return None;
+            }
 
             label
                 .split_whitespace()
                 .next()
-                .map(|label| format!("[{} {}]", label, expressions.join(" ")))
+                .map(|label| {
+                    if label.starts_with('<') {
+                        format!("{}", expressions.join(" "))
+                    } else {
+                        format!("[{} {}]", label, expressions.join(" "))
+                    }
+                })
         }
         Tree::Leaf(label, value) => {
             if label.starts_with('<') {
